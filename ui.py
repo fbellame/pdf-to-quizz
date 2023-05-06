@@ -32,29 +32,28 @@ def build_question(count, json_question):
 
     return count
 
-if check_password():
-    # Upload PDF file
-    uploaded_file = st.file_uploader(":female-student:", type=["pdf"])
+# Upload PDF file
+uploaded_file = st.file_uploader(":female-student:", type=["pdf"])
 
-    if uploaded_file is not None:    
-        old_file_name = st.session_state.get('uploaded_file_name', None)
-        if (old_file_name != uploaded_file.name):
-            # Convert PDF to text
-            with st.spinner("Génération du quizz..."):
+if uploaded_file is not None:    
+    old_file_name = st.session_state.get('uploaded_file_name', None)
+    if (old_file_name != uploaded_file.name):
+        # Convert PDF to text
+        with st.spinner("Génération du quizz..."):
 
 
-                with open(uploaded_file.name, "wb") as f:
-                    f.write(uploaded_file.getvalue())
-                
-                st.write("Quizz généré avec succès!")
+            with open(uploaded_file.name, "wb") as f:
+                f.write(uploaded_file.getvalue())
+            
+            st.write("Quizz généré avec succès!")
 
-                # Initialize session state
-                st.session_state['uploaded_file_name'] = uploaded_file.name
-                st.session_state['questions'] = asyncio.run(pdf_to_quizz(uploaded_file.name))
+            # Initialize session state
+            st.session_state['uploaded_file_name'] = uploaded_file.name
+            st.session_state['questions'] = asyncio.run(pdf_to_quizz(uploaded_file.name))
 
-    if ('questions' in st.session_state):
-        # Display question
-        count = 0
-        for json_question in st.session_state['questions']:
+if ('questions' in st.session_state):
+    # Display question
+    count = 0
+    for json_question in st.session_state['questions']:
 
-            count = build_question(count, json_question)
+        count = build_question(count, json_question)
