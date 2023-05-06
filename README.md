@@ -23,6 +23,12 @@ Keep in mind this is not free BUT the with the usage of **gpt-3.5-turbo** it's n
 
 ![Open AI key](img/OPENAI-KEY.png)
 
+Once you have your API key you can install it in your terminal like this:
+
+``` sh
+export OPENAI_API_KEY=[Your-API-key]
+```
+
 
 ## Instructions
 
