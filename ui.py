@@ -1,6 +1,9 @@
 import streamlit as st
 from ui_utils import check_password
 from pdf_to_quizz import pdf_to_quizz
+from text_to_quizz import txt_to_quizz
+
+
 import asyncio
 
 st.title("PDF to Quiz (:-)(-: )")
@@ -34,6 +37,13 @@ def build_question(count, json_question):
 
 # Upload PDF file
 uploaded_file = st.file_uploader(":female-student:", type=["pdf"])
+txt = st.text_area('Taper le texte à partir duquel vous voulez générer le quizz')
+
+if st.button("Générer Quiz", key=f"button_generer"):
+    if txt is not None:
+        with st.spinner("Génération du quizz..."):
+            st.session_state['questions'] = asyncio.run(txt_to_quizz(txt))
+            st.write("Quizz généré avec succès!")
 
 if uploaded_file is not None:    
     old_file_name = st.session_state.get('uploaded_file_name', None)
@@ -41,15 +51,14 @@ if uploaded_file is not None:
         # Convert PDF to text
         with st.spinner("Génération du quizz..."):
 
-
             with open(uploaded_file.name, "wb") as f:
-                f.write(uploaded_file.getvalue())
-            
-            st.write("Quizz généré avec succès!")
+                f.write(uploaded_file.getvalue())        
 
             # Initialize session state
             st.session_state['uploaded_file_name'] = uploaded_file.name
             st.session_state['questions'] = asyncio.run(pdf_to_quizz(uploaded_file.name))
+
+            st.write("Quizz généré avec succès!")
 
 if ('questions' in st.session_state):
     # Display question
