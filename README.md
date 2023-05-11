@@ -46,3 +46,9 @@ To run:
 ```sh
 streamlit run ui.py
 ```
+
+To run on docker
+```sh
+docker build -t pdf-to-quizz .
+docker run -p 8501:8501 pdf-to-quizz
+```
