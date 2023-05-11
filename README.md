@@ -50,5 +50,5 @@ streamlit run ui.py
 To run on docker
 ```sh
 docker build -t pdf-to-quizz .
-docker run -p 8501:8501 pdf-to-quizz
+docker run -e OPENAI_API_KEY=[your-api-key] -p 8501:8501 pdf-to-quizz
 ```
