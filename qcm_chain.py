@@ -28,7 +28,7 @@ Ces questions devraient être détaillées et uniquement basées sur les informa
 <End Document>"""
 
 output_parser = RegexParser(
-    regex=r"Question 1:\s+\n?(.*?)\nCHOIX_A(.*?)\nCHOIX_B(.*?)\nCHOIX_C(.*?)\nCHOIX_D(.*?)(?:\n)+Réponse: (.*)\n\nQuestion 2:\s+\n?(.*?)\nCHOIX_A(.*?)\nCHOIX_B(.*?)\nCHOIX_C(.*?)\nCHOIX_D(.*?)(?:\n)+Réponse: (.*)", 
+    regex=r"Question\s?\d?:\s+\n?(.*?)\nCHOIX_A(.*?)\nCHOIX_B(.*?)\nCHOIX_C(.*?)\nCHOIX_D(.*?)(?:\n)+Réponse:\s?(.*)\n?\n?Question\s?\d?:\s+\n?(.*?)\nCHOIX_A(.*?)\nCHOIX_B(.*?)\nCHOIX_C(.*?)\nCHOIX_D(.*?)(?:\n)+Réponse:\s?(.*)", 
     output_keys=["question1", "A_1", "B_1", "C_1", "D_1", "reponse1","question2", "A_2", "B_2", "C_2", "D_2", "reponse2"]
 )
 
