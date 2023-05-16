@@ -9,26 +9,25 @@ from langchain.output_parsers.regex import RegexParser
 
 from langchain.prompts import PromptTemplate
 
-template = """Vous êtes un enseignant qui prépare des questions pour un quiz.
-Étant donné le document suivant, veuillez générer 2 questions de type QCM avec 4 options et une réponse qui correspond à la lettre du bon choix du QCM basées sur ce document.
+template = """You are a teacher preparing questions for a quiz. Given the following document, please generate 2 multiple-choice questions (MCQs) with 4 options and a corresponding answer letter based on the document.
 
-Exemple question:
+Example question:
 
-Question: question ici
-CHOIX_A: choix ici
-CHOIX_B: choix ici
-CHOIX_C: choix ici
-CHOIX_D: choix ici
-Réponse: réponse A ou B ou C ou D
+Question: question here
+CHOICE_A: choice here
+CHOICE_B: choice here
+CHOICE_C: choice here
+CHOICE_D: choice here
+Answer: A or B or C or D
 
-Ces questions devraient être détaillées et uniquement basées sur les information dans le document.
+These questions should be detailed and solely based on the information provided in the document.
 
 <Begin Document>
 {doc}
 <End Document>"""
 
 output_parser = RegexParser(
-    regex=r"Question 1:\s+\n?(.*?)\nCHOIX_A(.*?)\nCHOIX_B(.*?)\nCHOIX_C(.*?)\nCHOIX_D(.*?)(?:\n)+Réponse: (.*)\n\nQuestion 2:\s+\n?(.*?)\nCHOIX_A(.*?)\nCHOIX_B(.*?)\nCHOIX_C(.*?)\nCHOIX_D(.*?)(?:\n)+Réponse: (.*)", 
+    regex=r"Question\s?\d?:\s+\n?(.*?)\nCHOICE_A(.*?)\nCHOICE_B(.*?)\nCHOICE_C(.*?)\nCHOICE_D(.*?)(?:\n)+Answer:\s?(.*)\n?\n?Question\s?\d?:\s+\n?(.*?)\nCHOICE_A(.*?)\nCHOICE_B(.*?)\nCHOICE_C(.*?)\nCHOICE_D(.*?)(?:\n)+Answer:\s?(.*)", 
     output_keys=["question1", "A_1", "B_1", "C_1", "D_1", "reponse1","question2", "A_2", "B_2", "C_2", "D_2", "reponse2"]
 )
 

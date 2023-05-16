@@ -1,0 +1,17 @@
+{
+    "version": "0.1.0",
+    "configurations": [
+        
+
+        {
+            "name": "debug streamlit",
+            "type": "python",
+            "request": "launch",
+            "program": "/Users/faridbellameche/opt/anaconda3/bin/streamlit",  // /home/xx/tmp/venv/bin/streamlit",
+            "args": [
+                "run",
+                "ui.py"
+            ]
+        }
+    ]
+    }
