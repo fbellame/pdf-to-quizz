@@ -2,6 +2,7 @@ import streamlit as st
 from ui_utils import check_password
 from pdf_to_quizz import pdf_to_quizz
 from text_to_quizz import txt_to_quizz
+from generate_pdf import generate_pdf_quiz
 
 
 import asyncio
@@ -66,3 +67,21 @@ if ('questions' in st.session_state):
     for json_question in st.session_state['questions']:
 
         count = build_question(count, json_question)
+        
+    # generate pdf quiz
+    if st.button("Générer PDF Quiz", key=f"button_generer_quiz"):
+        with st.spinner("Génération du quizz en PDF..."):
+            json_questions = st.session_state['questions']
+            # save into a file
+            file_name = uploaded_file.name
+
+            # remove extension .pdf from file name
+            if file_name.endswith(".pdf"):
+                file_name = file_name[:-4]
+
+            with open(f"data/quiz-{file_name}.json", "w") as f:
+                f.write(str(json_questions))
+
+            generate_pdf_quiz(f"data/quiz-{file_name}.json")
+            
+            st.write("PDF Quiz généré avec succés!")        
