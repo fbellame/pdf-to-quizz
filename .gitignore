@@ -160,4 +160,7 @@ cython_debug/
 #.idea/
 
 .vscode/
+<<<<<<< HEAD
 data/
+=======
+>>>>>>> 10b9ffb (add a generate quizz pdf function)

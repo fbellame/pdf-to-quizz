@@ -38,7 +38,7 @@ def build_question(count, json_question):
 
 # Upload PDF file
 uploaded_file = st.file_uploader(":female-student:", type=["pdf"])
-txt = st.text_area('Taper le texte à partir duquel vous voulez générer le quizz')
+txt = st.text_area('Taper le texte à partir duquel vous voulez générer le quiz')
 
 if st.button("Générer Quiz", key=f"button_generer"):
     if txt is not None:
@@ -66,7 +66,6 @@ if ('questions' in st.session_state):
     count = 0
     for json_question in st.session_state['questions']:
 
-        count = build_question(count, json_question)
         
     # generate pdf quiz
     if st.button("Générer PDF Quiz", key=f"button_generer_quiz"):
