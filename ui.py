@@ -3,7 +3,7 @@ from ui_utils import check_password
 from pdf_to_quizz import pdf_to_quizz
 from text_to_quizz import txt_to_quizz
 from generate_pdf import generate_pdf_quiz
-
+import json
 
 import asyncio
 
@@ -52,12 +52,12 @@ if uploaded_file is not None:
         # Convert PDF to text
         with st.spinner("Génération du quizz..."):
 
-            with open(uploaded_file.name, "wb") as f:
+            with open(f"data/{uploaded_file.name}", "wb") as f:
                 f.write(uploaded_file.getvalue())        
 
             # Initialize session state
             st.session_state['uploaded_file_name'] = uploaded_file.name
-            st.session_state['questions'] = asyncio.run(pdf_to_quizz(uploaded_file.name))
+            st.session_state['questions'] = asyncio.run(pdf_to_quizz(f"data/{uploaded_file.name}"))
 
             st.write("Quizz généré avec succès!")
 
@@ -80,7 +80,8 @@ if ('questions' in st.session_state):
                 file_name = file_name[:-4]
 
             with open(f"data/quiz-{file_name}.json", "w") as f:
-                f.write(str(json_questions))
+                str = json.dumps(json_questions)
+                f.write(str)
 
             generate_pdf_quiz(f"data/quiz-{file_name}.json")
             
