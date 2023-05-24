@@ -2,7 +2,8 @@ import streamlit as st
 from ui_utils import check_password
 from pdf_to_quizz import pdf_to_quizz
 from text_to_quizz import txt_to_quizz
-
+from generate_pdf import generate_pdf_quiz
+import json
 
 import asyncio
 
@@ -51,12 +52,12 @@ if uploaded_file is not None:
         # Convert PDF to text
         with st.spinner("Génération du quizz..."):
 
-            with open(uploaded_file.name, "wb") as f:
+            with open(f"data/{uploaded_file.name}", "wb") as f:
                 f.write(uploaded_file.getvalue())        
 
             # Initialize session state
             st.session_state['uploaded_file_name'] = uploaded_file.name
-            st.session_state['questions'] = asyncio.run(pdf_to_quizz(uploaded_file.name))
+            st.session_state['questions'] = asyncio.run(pdf_to_quizz(f"data/{uploaded_file.name}"))
 
             st.write("Quizz généré avec succès!")
 
@@ -66,3 +67,22 @@ if ('questions' in st.session_state):
     for json_question in st.session_state['questions']:
 
         count = build_question(count, json_question)
+        
+    # generate pdf quiz
+    if st.button("Générer PDF Quiz", key=f"button_generer_quiz"):
+        with st.spinner("Génération du quizz en PDF..."):
+            json_questions = st.session_state['questions']
+            # save into a file
+            file_name = uploaded_file.name
+
+            # remove extension .pdf from file name
+            if file_name.endswith(".pdf"):
+                file_name = file_name[:-4]
+
+            with open(f"data/quiz-{file_name}.json", "w", encoding='latin-1', errors='ignore') as f:
+                str = json.dumps(json_questions)
+                f.write(str)
+
+            generate_pdf_quiz(f"data/quiz-{file_name}.json", json_questions)
+            
+            st.write("PDF Quiz généré avec succés!")        
