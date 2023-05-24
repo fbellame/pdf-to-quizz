@@ -45,8 +45,6 @@ def generate_questions(data, pdf: PDF, print_response:  bool = False):
     pdf.add_page()
 
 def generate_pdf(filename , json_data):
-    # Load JSON data
-    data = json.loads(json_data)
 
     # Create PDF document
     pdf = PDF()
@@ -55,17 +53,13 @@ def generate_pdf(filename , json_data):
     # Set font style and size
     pdf.set_font("Arial", size=10)
 
-    generate_questions(data, pdf, print_response=False)
-    generate_questions(data, pdf, print_response=True)
+    generate_questions(json_data, pdf, print_response=False)
+    generate_questions(json_data, pdf, print_response=True)
 
     # Save PDF to a file
     pdf.output(filename)
 
-def generate_pdf_quiz(file_name):
-
-    # read json file
-    with open(file_name, 'r', encoding='utf-8') as json_file:
-        json_data = json_file.read()
+def generate_pdf_quiz(file_name, json_data):
 
     # remove extension .pdf from file name
     if file_name.endswith(".json"):

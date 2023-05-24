@@ -79,10 +79,10 @@ if ('questions' in st.session_state):
             if file_name.endswith(".pdf"):
                 file_name = file_name[:-4]
 
-            with open(f"data/quiz-{file_name}.json", "w") as f:
+            with open(f"data/quiz-{file_name}.json", "w", encoding='latin-1', errors='ignore') as f:
                 str = json.dumps(json_questions)
                 f.write(str)
 
-            generate_pdf_quiz(f"data/quiz-{file_name}.json")
+            generate_pdf_quiz(f"data/quiz-{file_name}.json", json_questions)
             
             st.write("PDF Quiz généré avec succés!")        
