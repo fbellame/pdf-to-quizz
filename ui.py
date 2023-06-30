@@ -22,7 +22,7 @@ def build_question(count, json_question):
         color = ""
         if st.button("Soumettre", key=f"button_{count}"):
             rep = json_question.get(f"reponse")
-            if selected_answer == rep:
+            if selected_answer in rep:
                 color = ":green"
                 st.write(f":green[Bonne réponse: {rep}]")
                 
@@ -43,7 +43,7 @@ txt = st.text_area('Taper le texte à partir duquel vous voulez générer le qui
 if st.button("Générer Quiz", key=f"button_generer"):
     if txt is not None:
         with st.spinner("Génération du quizz..."):
-            st.session_state['questions'] = asyncio.run(txt_to_quizz(txt))
+            st.session_state['questions'] = txt_to_quizz(txt)
             st.write("Quizz généré avec succès!")
 
 if uploaded_file is not None:    
@@ -57,7 +57,7 @@ if uploaded_file is not None:
 
             # Initialize session state
             st.session_state['uploaded_file_name'] = uploaded_file.name
-            st.session_state['questions'] = asyncio.run(pdf_to_quizz(f"data/{uploaded_file.name}"))
+            st.session_state['questions'] = pdf_to_quizz(f"data/{uploaded_file.name}")
 
             st.write("Quizz généré avec succès!")
 
