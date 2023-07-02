@@ -17,18 +17,13 @@ Will generate the following interractive quiz questions:
 
 ## Pre-requisite
 
-You need an OpenAI API key from https://platform.openai.com/account/api-keys
+You need a GPU to run the 13B model locally or you need to deploy it on HuggingFace by exemple (it's not free!)
 
-Keep in mind this is not free BUT the with the usage of **gpt-3.5-turbo** it's not expensive at all unless you drop really big PDF (more than 100 pages).
+You can find [the model on HuggingFace](https://huggingface.co/fbellame/pdf_to_quizz_llama_13B)
 
-![Open AI key](img/OPENAI-KEY.png)
+The [training  dataset is also available on HuggingFace](https://huggingface.co/datasets/fbellame/pdf_to_quizz_llama_13B)
 
-Once you have your API key you can install it in your terminal like this:
-
-``` sh
-export OPENAI_API_KEY=[Your-API-key]
-```
-
+A video explaining the process is also [available](https://youtu.be/gXXkLVfiBVQ) (in french sorry)
 
 ## Instructions
 
@@ -41,14 +36,8 @@ pip install -r requirements.txt
 ## Run
 
 
-
 To run:
 ```sh
 streamlit run ui.py
 ```
 
-To run on docker
-```sh
-docker build -t pdf-to-quizz .
-docker run -e OPENAI_API_KEY=[your-api-key] -p 8501:8501 pdf-to-quizz
-```
