@@ -1,8 +1,9 @@
 from langchain.llms import HuggingFacePipeline
 import torch
-from torch import float16, cuda
+from torch import cuda
 from transformers import StoppingCriteria, StoppingCriteriaList
 import transformers
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 # define custom stopping criteria object
 class StopOnTokens(StoppingCriteria):
@@ -34,9 +35,9 @@ class QaLlm():
         device = 'cuda:0'
 
         model = transformers.AutoModelForCausalLM.from_pretrained(
-            'fbellame/pdf_to_quizz_llama_13B',
-            device_map={"": device},
-            torch_dtype=float16
+           'fbellame/pdf_to_quizz_llama_13B',
+           device_map={"": device},
+           load_in_4bit=True
         )
 
         tokenizer = transformers.AutoTokenizer.from_pretrained("fbellame/pdf_to_quizz_llama_13B", use_fast=False)
@@ -47,13 +48,13 @@ class QaLlm():
             model=model, tokenizer=tokenizer,
             return_full_text=True,  # langchain expects the full text
             task='text-generation',
-            device=device,
+            device_map={"": device},
             # we pass model parameters here too
             stopping_criteria=stopping_criteria,  # without this model will ramble
             temperature=0.1,  # 'randomness' of outputs, 0.0 is the min and 1.0 the max
             top_p=0.15,  # select from top tokens whose probability add up to 15%
             top_k=0,  # select from top 0 tokens (because zero, relies on top_p)
-            max_new_tokens=1400,  # max number of tokens to generate in the output
+            max_new_tokens=1000,  # max number of tokens to generate in the output
             repetition_penalty=1.2  # without this output begins repeating
         )
 
