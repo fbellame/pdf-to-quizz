@@ -7,7 +7,8 @@
             "name": "debug streamlit",
             "type": "python",
             "request": "launch",
-            "program": "/home/farid/miniconda3/envs/streamlit-kb-bot/bin/streamlit",  
+            "program": "/home/farid/miniconda3/envs/ai/bin/streamlit",  
+            "justMyCode": false,
             "args": [
                 "run",
                 "ui.py"

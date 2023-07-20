@@ -1,6 +1,10 @@
 from langchain.document_loaders import PyPDFLoader
 from quizz_generator import generate_quizz
 from langchain.text_splitter import NLTKTextSplitter
+import nltk
+from typing import List
+
+nltk.download('punkt')
 
 def pdf_to_quizz(pdf_file_name):
 
@@ -9,23 +13,16 @@ def pdf_to_quizz(pdf_file_name):
     docs = loader.load_and_split(NLTKTextSplitter(chunk_size=700, chunk_overlap=0))
     paragraphs =list(map(lambda doc: doc.page_content.replace("\n", " ").strip(), docs))
 
-    tasks = []
     i = 0
+    batch_paragraph : List[str] = []
     for paragraph in paragraphs:
         i+=1
-        try:
-            if i<=10:
-                task = process_paragraph(paragraph)
-                tasks.append(task)
-            else:
-                break
-        except Exception as e:
-            # Handle the exception
-            print(f"Error processing page: {str(e)}")
-            # Optionally, you can choose to skip the page and continue with the next one
-            continue        
+        if i<=10:
+            batch_paragraph.append(paragraph)
+        else:
+            break
 
-    return tasks
+    return generate_quizz(batch_paragraph)
   
-def process_paragraph(paragraph):
-    return  generate_quizz(paragraph)
+# def process_paragraph(paragraph):
+#     return  generate_quizz(paragraph)

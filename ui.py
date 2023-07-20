@@ -17,7 +17,7 @@ def build_question(count, json_question):
         selected_answer = st.selectbox(f"Selectionnez votre réponse:", choices, key=f"select_{count}")
         for choice in choices:
             choice_str = json_question.get(f"{choice}", "None")
-            st.write(f"{choice} {choice_str}")
+            st.write(f"{choice} : {choice_str}")
                     
         color = ""
         if st.button("Soumettre", key=f"button_{count}"):

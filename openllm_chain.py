@@ -41,6 +41,28 @@ class OpenLlamaChain(Chain):
         
         return {self.output_key: response.generations[0][0].text.lstrip()}
 
+    def _call_batch(
+        self,
+        inputs: List[Dict[str, Any]],
+        run_manager: Optional[CallbackManagerForChainRun] = None,
+    ) -> List[Dict[str, str]]:
+        
+        prompts = []
+        for input in inputs:
+            prompts.append(self.prompt.format_prompt(**input))
+
+        # generate response from llm
+        response = self.llm.generate_prompt(
+            prompts,
+            callbacks=run_manager.get_child() if run_manager else None
+        )
+
+        quizzs = []
+        for generation in response.generations:
+            quizzs.append({self.output_key: generation[0].text.lstrip()})
+
+        return quizzs
+
     async def _acall(
         self, inputs: Dict[str, Any], run_manager: Optional[CallbackManagerForChainRun] = None,
     ) -> Dict[str, str]:
@@ -51,13 +73,42 @@ class OpenLlamaChain(Chain):
         return "open_llama_pdf_to_quizz_chain"
     
     def predict(self, doc: str) -> str:
+        
         out = self._call(inputs={'doc': doc})
-        return out['text']
+        return out
     
+    def predict_batch(self, docs: List[str], parsers) -> List[str]:
 
-    def predict_and_parse(self, doc: str, parser: RegexParser) -> str:
+        inputs = []
+        for doc in docs:
+            inputs.append({'doc': doc})
+        
+        out = self._call_batch(inputs=inputs)
+
+        ret = []
+        for resp in out:
+            try:
+                ret.append(self.parse(resp, parsers))
+            except Exception as e:
+                print(f"Error processing page: {str(e)}")
+                continue
+
+        return ret
+
+    def predict_and_parse(self, doc: str, parsers) -> str:
         out = self.predict(doc)
 
-        result = parser.parse(out)
+        return self.parse(out, parsers)
+    
+    def parse(self, response: Dict[str, Any], parsers):
 
-        return result
+        def get_parsed_value(parser, key, doc):
+            result = parser.parse(doc["text"])
+            value = result.get(key).strip()
+            return {key: value}
+
+        quizz = {}
+        for key, parser in parsers.items():
+            quizz.update(get_parsed_value(parser, key, response))
+
+        return quizz
