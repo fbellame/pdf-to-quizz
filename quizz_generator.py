@@ -1,22 +1,57 @@
 from qcm_chain import QCMGenerateChain
 from qa_llm import QaLlm
-import asyncio
+from langchain.output_parsers.regex import RegexParser
+from typing import List
+from openllm_chain import OpenLlamaChain
 
-async def llm_call(qa_chain: QCMGenerateChain, text: str):
+parsers = {
+    "question": RegexParser(
+        regex=r"question:(.*?)\?",
+        output_keys=["question"]
+    ),
+    "A": RegexParser(
+        regex=r"CHOICE_A:(.*?)\\n",
+        output_keys=["A"]
+    ),
+    "B": RegexParser(
+        regex=r"CHOICE_B:(.*?)\\n",
+        output_keys=["B"]
+    ),
+    "C": RegexParser(
+        regex=r"CHOICE_C:(.*?)\\n",
+        output_keys=["C"]
+    ),
+    "D": RegexParser(
+        regex=r"CHOICE_D:(.*?)\\n",
+        output_keys=["D"]
+    ),
+    "reponse": RegexParser(
+        regex=r"reponse:(.*?)\\n",
+        output_keys=["reponse"]
+    )
+}
+
+qa_llm = QaLlm()
+qa_chain = QCMGenerateChain.from_llm(qa_llm.get_llm())
+
+def llm_call(qa_chain: OpenLlamaChain, texts: List[str]):
     
     print(f"llm call running...")
-    batch_examples = await asyncio.gather(qa_chain.aapply_and_parse(text))
+    batch_examples = qa_chain.predict_batch(texts, parsers)
     print(f"llm call done.")
 
     return batch_examples
 
-async def generate_quizz(content:str):
+def generate_quizz(contents:List[str]):
     """
     Generates a quizz from the given content.
     """
-    qa_llm = QaLlm()
-    qa_chain = QCMGenerateChain.from_llm(qa_llm.get_llm())
+    docs = []
+    for content in contents:
+        docs.append({"doc": content})
 
-    return await llm_call(qa_chain, [{"doc": content}])
+    return llm_call(qa_chain, docs)
+
+    
 
     

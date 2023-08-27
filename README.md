@@ -17,17 +17,8 @@ Will generate the following interractive quiz questions:
 
 ## Pre-requisite
 
-You need an OpenAI API key from https://platform.openai.com/account/api-keys
-
-Keep in mind this is not free BUT the with the usage of **gpt-3.5-turbo** it's not expensive at all unless you drop really big PDF (more than 100 pages).
-
-![Open AI key](img/OPENAI-KEY.png)
-
-Once you have your API key you can install it in your terminal like this:
-
-``` sh
-export OPENAI_API_KEY=[Your-API-key]
-```
+You need docker to run TGI.
+You can also deploy your model on HuggingFace.
 
 
 ## Instructions
@@ -40,15 +31,18 @@ pip install -r requirements.txt
 
 ## Run
 
+Huggingface TGI will be used to start an inference endpoint.
 
-
-To run:
 ```sh
-streamlit run ui.py
+ model=fbellame/pdf_to_quizz_llama_13B_8bits
+ volume=$PWD/data
+ num_shard=1
+
+ sudo docker run --gpus all --shm-size 1g -p 8080:80 -v $volume:/data ghcr.io/huggingface/text-generation-inference:0.9 --model-id $model --num-shard $num_shard
 ```
 
-To run on docker
+
+To run the UI:
 ```sh
-docker build -t pdf-to-quizz .
-docker run -e OPENAI_API_KEY=[your-api-key] -p 8501:8501 pdf-to-quizz
+streamlit run ui.py
 ```

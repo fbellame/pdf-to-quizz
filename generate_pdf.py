@@ -21,10 +21,10 @@ def generate_questions(data, pdf: PDF, print_response:  bool = False):
     for question_data in data:
         question = question_data["question"]
         options = [
-            f"A{question_data['A']}",
-            f"B{question_data['B']}",
-            f"C{question_data['C']}",
-            f"D{question_data['D']}"
+            f"A: {question_data['A']}",
+            f"B: {question_data['B']}",
+            f"C: {question_data['C']}",
+            f"D: {question_data['D']}"
         ]
 
         # Add question

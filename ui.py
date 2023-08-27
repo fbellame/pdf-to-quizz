@@ -5,19 +5,17 @@ from text_to_quizz import txt_to_quizz
 from generate_pdf import generate_pdf_quiz
 import json
 
-import asyncio
-
 st.title("PDF to Quiz (:-)(-: )")
 
 def build_question(count, json_question):
 
     if json_question.get(f"question") is not None:
-        st.write("Question: ", json_question.get(f"question", ""))
+        st.write("Question: ", json_question.get(f"question", "") + "?")
         choices = ['A', 'B', 'C', 'D']
         selected_answer = st.selectbox(f"Selectionnez votre réponse:", choices, key=f"select_{count}")
         for choice in choices:
             choice_str = json_question.get(f"{choice}", "None")
-            st.write(f"{choice} {choice_str}")
+            st.write(f"{choice}: {choice_str}")
                     
         color = ""
         if st.button("Soumettre", key=f"button_{count}"):
@@ -43,7 +41,7 @@ txt = st.text_area('Taper le texte à partir duquel vous voulez générer le qui
 if st.button("Générer Quiz", key=f"button_generer"):
     if txt is not None:
         with st.spinner("Génération du quizz..."):
-            st.session_state['questions'] = asyncio.run(txt_to_quizz(txt))
+            st.session_state['questions'] = txt_to_quizz(txt)
             st.write("Quizz généré avec succès!")
 
 if uploaded_file is not None:    
@@ -57,7 +55,7 @@ if uploaded_file is not None:
 
             # Initialize session state
             st.session_state['uploaded_file_name'] = uploaded_file.name
-            st.session_state['questions'] = asyncio.run(pdf_to_quizz(f"data/{uploaded_file.name}"))
+            st.session_state['questions'] = pdf_to_quizz(f"data/{uploaded_file.name}")
 
             st.write("Quizz généré avec succès!")
 

@@ -1,31 +1,31 @@
-import asyncio
 from langchain.document_loaders import PyPDFLoader
 from quizz_generator import generate_quizz
-from ui_utils import transform
+from langchain.text_splitter import NLTKTextSplitter
+import nltk
+from typing import List
 
-async def pdf_to_quizz(pdf_file_name):
+nltk.download('punkt')
 
+def pdf_to_quizz(pdf_file_name):
 
     loader = PyPDFLoader(pdf_file_name)
-    pages = loader.load_and_split()
 
-    sem = asyncio.Semaphore(10)  # Set the maximum number of parallel tasks
+    docs = loader.load_and_split(NLTKTextSplitter(chunk_size=700, chunk_overlap=0))
+    paragraphs =list(map(lambda doc: doc.page_content.replace("\n", " ").strip(), docs))
 
-    async def process_page(page):
-        async with sem:
-            return await generate_quizz(page.page_content)
+    quizzs = []
 
-    tasks = []
-    for page in pages:
-        task = process_page(page)
-        tasks.append(task)
+    for i in range(0, len(paragraphs), 2):
+        batch_paragraph : List[str] = []
+        if i + 1 < len(paragraphs):
+            batch_paragraph = paragraphs[i:i+2]
+        else:
+            batch_paragraph = [paragraphs[i]]
+        quizzs.extend(generate_quizz(batch_paragraph))
 
-    all_questions = []
+        # max 10 quizzs
+        if len(quizzs)> 10:
+            break
 
-    questions = await asyncio.gather(*tasks)    
-    
-    for question in questions:
-        all_questions.extend(transform(question[0]))
-
-    return all_questions
+    return quizzs
   
