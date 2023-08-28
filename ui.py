@@ -7,6 +7,7 @@ import json
 
 st.title("PDF to Quiz (:-)(-: )")
 
+
 def build_question(count, json_question):
 
     if json_question.get(f"question") is not None:
@@ -41,6 +42,7 @@ txt = st.text_area('Taper le texte à partir duquel vous voulez générer le qui
 if st.button("Générer Quiz", key=f"button_generer"):
     if txt is not None:
         with st.spinner("Génération du quizz..."):
+
             st.session_state['questions'] = txt_to_quizz(txt)
             st.write("Quizz généré avec succès!")
 
@@ -50,12 +52,15 @@ if uploaded_file is not None:
         # Convert PDF to text
         with st.spinner("Génération du quizz..."):
 
+            progress_text = "Operation en cours..."
+            quizz_progress_bar = st.progress(0, text=progress_text)
+
             with open(f"data/{uploaded_file.name}", "wb") as f:
                 f.write(uploaded_file.getvalue())        
 
             # Initialize session state
             st.session_state['uploaded_file_name'] = uploaded_file.name
-            st.session_state['questions'] = pdf_to_quizz(f"data/{uploaded_file.name}")
+            st.session_state['questions'] = pdf_to_quizz(f"data/{uploaded_file.name}", quizz_progress_bar)
 
             st.write("Quizz généré avec succès!")
 
