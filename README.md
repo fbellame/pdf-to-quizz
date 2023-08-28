@@ -14,10 +14,15 @@ Will generate the following interractive quiz questions:
 
 ![PDF sample](img/quiz-reponse.png)
 
+This branch show how to run a model locally of 13B fine tuned with H2o Studio using TGI (instead of using OpenAI Gpt-3.5-turbo).
+
+The model is on HuggingFace [fbellame/llama2-pdf-to-quizz-13b](https://huggingface.co/fbellame/llama2-pdf-to-quizz-13b)
+
 
 ## Pre-requisite
 
 You need docker to run TGI.
+
 You can also deploy your model on HuggingFace.
 
 
@@ -34,11 +39,11 @@ pip install -r requirements.txt
 Huggingface TGI will be used to start an inference endpoint.
 
 ```sh
- model=fbellame/pdf_to_quizz_llama_13B_8bits
+ model=fbellame/llama2-pdf-to-quizz-13b
  volume=$PWD/data
  num_shard=1
 
- sudo docker run --gpus all --shm-size 1g -p 8080:80 -v $volume:/data ghcr.io/huggingface/text-generation-inference:0.9 --model-id $model --num-shard $num_shard
+ sudo docker run --gpus all --shm-size 1g -p 8080:80 -v $volume:/data ghcr.io/huggingface/text-generation-inference:1.0.2 --model-id $model --num-shard $num_shard --quantize bitsandbytes-fp4
 ```
 
 
