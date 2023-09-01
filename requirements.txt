@@ -3,6 +3,6 @@ pypdf==3.7.0
 streamlit==1.21.0
 fpdf==1.7.2
 text-generation==0.6.0
-beautifulsoup4==2.4.1
+beautifulsoup4
 nltk==3.8.1
 

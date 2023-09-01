@@ -1,0 +1,7 @@
+POST http://192.168.1.138:8080/generate HTTP/1.1
+content-type: application/json
+
+{
+    "inputs":"Farid Bellameche is",
+    "parameters":{"max_new_tokens":50}
+}
