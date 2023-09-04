@@ -23,13 +23,13 @@ def pdf_to_quizz(pdf_file_name, progress_bar):
             batch_paragraph = paragraphs[i:i+2]
         else:
             batch_paragraph = [paragraphs[i]]
-        quizzs.extend(generate_quizz(batch_paragraph))
+        quizzs.append(generate_quizz(batch_paragraph))
         progress = (progress + 18) if progress < (100 - 18) else 100
 
         progress_bar.progress(progress)
 
-        # max 10 quizzs
-        if len(quizzs)> 10:
+        # max 2 quizzs
+        if len(quizzs)> 2:
             progress_bar.progress(100)
             break
 

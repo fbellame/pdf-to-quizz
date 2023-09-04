@@ -10,23 +10,23 @@ parsers = {
     ),
     "A": RegexParser(
         regex=r"(?:\n)+\s*CHOICE_A:(.*?)\n+",
-        output_keys=["A"]
+        output_keys=["choice_a"]
     ),
     "B": RegexParser(
         regex=r"(?:\n)+\s*CHOICE_B:(.*?)\n+",
-        output_keys=["B"]
+        output_keys=["choice_b"]
     ),
     "C": RegexParser(
         regex=r"(?:\n)+\s*CHOICE_C:(.*?)\n+",
-        output_keys=["C"]
+        output_keys=["choice_c"]
     ),
     "D": RegexParser(
         regex=r"(?:\n)+\s*CHOICE_D:(.*?)\n+",
-        output_keys=["D"]
+        output_keys=["choice_d"]
     ),
     "reponse": RegexParser(
         regex=r"(?:\n)+reponse:\s?(.*)",
-        output_keys=["reponse"]
+        output_keys=["answer"]
     )
 }
 

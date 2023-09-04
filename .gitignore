@@ -161,3 +161,5 @@ cython_debug/
 
 .vscode/
 data/
+open_ai.key
+.DS_Store

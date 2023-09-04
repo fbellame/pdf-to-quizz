@@ -12,7 +12,7 @@ def build_question(count, json_question):
 
     if json_question.get(f"question") is not None:
         st.write("Question: ", json_question.get(f"question", "") + "?")
-        choices = ['A', 'B', 'C', 'D']
+        choices = ['choice_a', 'choice_b', 'choice_c', 'choice_d']
         selected_answer = st.selectbox(f"Selectionnez votre réponse:", choices, key=f"select_{count}")
         for choice in choices:
             choice_str = json_question.get(f"{choice}", "None")
@@ -20,7 +20,7 @@ def build_question(count, json_question):
                     
         color = ""
         if st.button("Soumettre", key=f"button_{count}"):
-            rep = json_question.get(f"reponse")
+            rep = json_question.get(f"answer")
             if selected_answer == rep:
                 color = ":green"
                 st.write(f":green[Bonne réponse: {rep}]")
@@ -64,12 +64,23 @@ if uploaded_file is not None:
 
             st.write("Quizz généré avec succès!")
 
+def build_quizz(count, quizz):
+    st.write("**Context:** " + quizz["context"])
+
+    st.write("**TGI:** ")
+    count = build_question(count, quizz["tgi"])
+
+    st.write("**OPEN AI:** ")
+    count = build_question(count, quizz["openai"])
+
+    return count
+
+
 if ('questions' in st.session_state):
     # Display question
     count = 0
-    for json_question in st.session_state['questions']:
-
-        count = build_question(count, json_question)
+    for quizz in st.session_state['questions']:
+        count = build_quizz(count, quizz)
         
     # generate pdf quiz
     if st.button("Générer PDF Quiz", key=f"button_generer_quiz"):
