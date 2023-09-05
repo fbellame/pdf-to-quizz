@@ -28,7 +28,7 @@ def answer_check(quizz):
 def filter_str(input):
 
     # Replace special characters with a space, except for line breaks
-    s1=re.sub("[^A-Za-z?@.!$%*-+_\",()\]\[:{}]"," ",input)
+    s1=re.sub("[^A-Za-z?@.!$%*-+_\",()\]\[:{}éèàç]"," ",input)
 
     # Collapse multiple spaces into one
     return re.sub(r'\s+', ' ', s1)

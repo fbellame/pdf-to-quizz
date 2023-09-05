@@ -56,7 +56,10 @@ def llm_call_openai(qa_chain: QCMGenerateChainOpenAI, text: str):
     print("check if answer if one of the choices a, b, c or d, if not try to find out the right choice from answer...")    
     resp = batch_examples[0].get("text")
     resp = filter_str(resp)
-    js = json.loads(resp)
+    try:
+        js = json.loads(resp)
+    except:
+        js = {"question" : resp, "choice_a": "", "choice_b": "", "choice_c": "", "choice_d": "", "answer": ""}
     return answer_check(js)
 
 def generate_quizz(contents:List[str]):
