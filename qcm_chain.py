@@ -24,12 +24,6 @@ class QCM(BaseModel):
     choice_d: str = Field(description="the choice D")
     answer: str = Field(description="The answer choice_a, choice_b, choice_c or choice_d")
 
-    @validator("question")
-    def question_validation(cls, field):
-        if field[-1] != '?':
-            raise ValueError("question must finish with a question mark ?")
-        return field
-
 PROMPT = PromptTemplate(
     input_variables=["doc"], template=template
 )

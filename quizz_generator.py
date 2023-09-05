@@ -4,6 +4,7 @@ from langchain.output_parsers.regex import RegexParser
 from typing import List
 from openllm_chain import OpenLlamaChain
 import json
+from quizz_utils import answer_check, filter_str
 
 parsers = {
     "question": RegexParser(
@@ -52,9 +53,11 @@ def llm_call_openai(qa_chain: QCMGenerateChainOpenAI, text: str):
     batch_examples = qa_chain.apply_and_parse(text)
     print(f"llm call done.")
 
-    quizz_str = batch_examples[0].get("text")
-
-    return json.loads(quizz_str)
+    print("check if answer if one of the choices a, b, c or d, if not try to find out the right choice from answer...")    
+    resp = batch_examples[0].get("text")
+    resp = filter_str(resp)
+    js = json.loads(resp)
+    return answer_check(js)
 
 def generate_quizz(contents:List[str]):
     """

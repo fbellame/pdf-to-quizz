@@ -2,12 +2,11 @@ from langchain.document_loaders import PyPDFLoader
 from quizz_generator import generate_quizz
 from langchain.text_splitter import NLTKTextSplitter
 import nltk
-from typing import List
-
+from quizz_utils import filter_str
 
 nltk.download('punkt')
 
-def pdf_to_quizz(pdf_file_name, progress_bar):
+def pdf_to_quizz(pdf_file_name, progress_bar, begin_index, end_index):
 
     loader = PyPDFLoader(pdf_file_name)
 
@@ -17,12 +16,11 @@ def pdf_to_quizz(pdf_file_name, progress_bar):
     quizzs = []
     progress = 0
 
-    for i in range(0, len(paragraphs), 2):
-        batch_paragraph : List[str] = []
-        if i + 1 < len(paragraphs):
-            batch_paragraph = paragraphs[i:i+2]
-        else:
-            batch_paragraph = [paragraphs[i]]
+    if end_index > len(paragraphs):
+        end_index = len(paragraphs)
+
+    for i in range(begin_index, end_index):
+        batch_paragraph = [filter_str(paragraphs[i])]
         quizzs.append(generate_quizz(batch_paragraph))
         progress = (progress + 18) if progress < (100 - 18) else 100
 
@@ -34,4 +32,5 @@ def pdf_to_quizz(pdf_file_name, progress_bar):
             break
 
     return quizzs
+
   
