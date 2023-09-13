@@ -2,6 +2,6 @@ POST http://192.168.1.138:8080/generate HTTP/1.1
 content-type: application/json
 
 {
-    "inputs":"Farid Bellameche is",
-    "parameters":{"max_new_tokens":50}
+    "inputs":"|system|You are a teacher preparing questions for a quiz. Given the following document, please generate 1 multiple-choice questions (MCQs) with 4 options and a corresponding answer letter based on the document.\\nExample question:\\nQuestion: question here\\nCHOICE_A: choice here\\nCHOICE_B: choice here\\nCHOICE_C: choice here\\nCHOICE_D: choice here\\nAnswer: A or B or C or D\\nThese questions should be detailed and solely based on the information provided in the document:  |prompt|\\n{'doc': 'Okay, good afternoon everyone and thank you all for joining today. I m super excited to welcome you all to MIT S introduction to deep learning. My name is Alexander Amini and I m going to be your instructor this year along with Alva Solimani. Now S is a really fun and fast paced class and for those of you who are not really familiar, I ll start by giving you a bit of background on what deep learning is and what this class is all about just because I think we re going to cover a ton of material in today s class and only one week this class is in total.'}\\n\\n |answer|",
+    "parameters":{"max_new_tokens":200}
 }
