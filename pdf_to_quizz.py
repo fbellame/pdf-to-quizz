@@ -9,23 +9,19 @@ async def pdf_to_quizz(pdf_file_name):
     loader = PyPDFLoader(pdf_file_name)
     pages = loader.load_and_split()
 
-    sem = asyncio.Semaphore(10)  # Set the maximum number of parallel tasks
+    def process_page(page):
 
-    async def process_page(page):
-        async with sem:
-            return await generate_quizz(page.page_content)
+            return generate_quizz(page.page_content)
 
-    tasks = []
+    questions = []
     for page in pages:
-        task = process_page(page)
-        tasks.append(task)
+        question = process_page(page)
+        questions.append(question)
 
     all_questions = []
-
-    questions = await asyncio.gather(*tasks)    
     
     for question in questions:
-        all_questions.extend(transform(question[0]))
+        all_questions.extend(transform(question))
 
     return all_questions
   

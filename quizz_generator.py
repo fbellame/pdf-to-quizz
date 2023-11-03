@@ -1,22 +1,20 @@
-from qcm_chain import QCMGenerateChain
-from qa_llm import QaLlm
-import asyncio
+from mistral_inference import MistralTextGenInference
 
-async def llm_call(qa_chain: QCMGenerateChain, text: str):
+url = "https://75syq57x8ohyw7-8000.proxy.runpod.net/"
+mistral = MistralTextGenInference(inference_server_url=url, max_new_tokens=500, temperature=0.1)
+
+def llm_call(text: str):
     
-    print(f"llm call running...")
-    batch_examples = await asyncio.gather(qa_chain.aapply_and_parse(text))
-    print(f"llm call done.")
+    print("llm call running...")
+    result = mistral(text)
+    print("llm call done.")
 
-    return batch_examples
+    return result
 
-async def generate_quizz(content:str):
+def generate_quizz(content:str):
     """
     Generates a quizz from the given content.
     """
-    qa_llm = QaLlm()
-    qa_chain = QCMGenerateChain.from_llm(qa_llm.get_llm())
-
-    return await llm_call(qa_chain, [{"doc": content}])
+    return llm_call(content)
 
     
