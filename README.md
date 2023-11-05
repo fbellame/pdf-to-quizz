@@ -12,6 +12,12 @@ Will generate the following interractive quiz questions:
 
 ![PDF sample](img/quiz-reponse.png)
 
+## Pre-requisite Google Form
+
+In order to allow this app to create a google form quizz, you must register an app on Google cloud and generate a client_secrets.json file.
+<br>
+
+Please read [Google form developer](https://developers.google.com/forms/api/quickstart/python)
 
 ## Pre-requisite no GPU
 
@@ -42,7 +48,7 @@ pip install -r requirements.txt
 To run:
 ```sh
 export RUNPOD_ID=[POD_ID]
-streamlit run ui.py
+streamlit run ui.py --server.port 80
 ```
 
 To run on docker

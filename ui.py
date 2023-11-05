@@ -4,8 +4,6 @@ from pdf_to_quizz import pdf_to_quizz
 from text_to_quizz import txt_to_quizz
 from quizz_to_form import quizz_to_form
 
-import asyncio
-
 st.title("PDF to Quiz (:-)(-: )")
 
 def build_question(count, json_question):
@@ -42,7 +40,7 @@ txt = st.text_area('Taper le texte à partir duquel vous voulez générer le qui
 if st.button("Générer Quiz", key="button_generer"):
     if txt is not None:
         with st.spinner("Génération du quizz..."):
-            st.session_state['questions'] = asyncio.run(txt_to_quizz(txt))
+            st.session_state['questions'] = txt_to_quizz(txt)
             st.write("Quizz généré avec succès!")
 
 if uploaded_file is not None:    
@@ -56,7 +54,7 @@ if uploaded_file is not None:
 
             # Initialize session state
             st.session_state['uploaded_file_name'] = uploaded_file.name
-            st.session_state['questions'] = asyncio.run(pdf_to_quizz(f"data/{uploaded_file.name}"))
+            st.session_state['questions'] = pdf_to_quizz(f"data/{uploaded_file.name}")
 
             st.write("Quizz généré avec succès!")
 

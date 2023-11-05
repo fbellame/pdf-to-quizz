@@ -1,7 +1,7 @@
 """Wrapper around Mistral Runpod text generation inference API."""
 import requests
 import json
-from langchain.output_parsers.regex import RegexParser
+from regex_parser import RegexParser
 
 template = """<s>[INST] You are a teacher preparing questions for a quiz. Given the following document, please generate 1 multiple-choice questions (MCQs) with 4 options and a corresponding answer letter based on the document.\\n\\nExample question:\\n\\nQuestion: question here\\nCHOICE_A: choice here\\nCHOICE_B: choice here\\nCHOICE_C: choice here\\nCHOICE_D: choice here\\nAnswer: A or B or C or D\\n\\nThese questions should be detailed and solely based on the information provided in the document.\\n here are the inputs \\n{doc}\\n[/INST]"""
 

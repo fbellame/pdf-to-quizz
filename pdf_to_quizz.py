@@ -1,15 +1,14 @@
-from langchain.document_loaders import PyPDFLoader
 from quizz_generator import generate_quizz
 from ui_utils import transform
+from PyPDF2 import PdfReader
 
 def pdf_to_quizz(pdf_file_name):
 
-    loader = PyPDFLoader(pdf_file_name)
-    pages = loader.load_and_split()
+    reader = PdfReader(pdf_file_name)
+    pages = reader.pages
 
     def process_page(page):
-
-            return generate_quizz(page.page_content)
+        return generate_quizz(page.extract_text().replace("\n", " ").strip())
 
     questions = []
     for page in pages:
