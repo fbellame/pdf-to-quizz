@@ -1,5 +1,5 @@
 # start by pulling the python image
-FROM python:3.9-slim
+FROM python:3.10-slim
 
 WORKDIR /app
 
@@ -9,7 +9,7 @@ COPY ./requirements.txt /requirements.txt
 # switch working directory
 WORKDIR /
 
-ENV OPENAI_API_KEY=""
+ENV RUNPOD_ID=""
 
 EXPOSE 8501
 

@@ -5,7 +5,6 @@ from langchain.output_parsers.regex import RegexParser
 
 template = """<s>[INST] You are a teacher preparing questions for a quiz. Given the following document, please generate 1 multiple-choice questions (MCQs) with 4 options and a corresponding answer letter based on the document.\\n\\nExample question:\\n\\nQuestion: question here\\nCHOICE_A: choice here\\nCHOICE_B: choice here\\nCHOICE_C: choice here\\nCHOICE_D: choice here\\nAnswer: A or B or C or D\\n\\nThese questions should be detailed and solely based on the information provided in the document.\\n here are the inputs \\n{doc}\\n[/INST]"""
 
-url = 'https://75syq57x8ohyw7-8000.proxy.runpod.net/'
 headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json'
@@ -98,10 +97,3 @@ class MistralTextGenInference():
         quizz_list = [quizz]
 
         return quizz_list
-    
-if __name__ == "__main__":
-    mistral = MistralTextGenInference(inference_server_url=url, max_new_tokens=500, temperature=0.1)
-
-    print(mistral("Farid is a software developper passionate about generative AI. He was born in France in 1972"))
-
-

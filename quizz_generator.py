@@ -1,6 +1,6 @@
 from mistral_inference import MistralTextGenInference
 
-url = "https://75syq57x8ohyw7-8000.proxy.runpod.net/"
+url = "https://7qb0jdzjj8t864-8000.proxy.runpod.net/"
 mistral = MistralTextGenInference(inference_server_url=url, max_new_tokens=500, temperature=0.1)
 
 def llm_call(text: str):
