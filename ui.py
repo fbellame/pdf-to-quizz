@@ -70,6 +70,8 @@ if ('questions' in st.session_state):
         with st.spinner("Génération du quizz Google Form..."):
             json_questions = st.session_state['questions']
 
-            quizz_to_form(json_questions)
+            result = quizz_to_form(json_questions)
 
-        st.write("Google Form Quiz généré avec succés!") 
+            st.write("Google Form Quiz généré avec succés!") 
+            st.write(f'[PQF-to_quizz-form]({result["responderUri"]})')
+

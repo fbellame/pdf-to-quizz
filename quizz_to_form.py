@@ -23,6 +23,7 @@ def quizz_to_form(quiz_data):
     NEW_FORM = {
         "info": {
             "title": "PDF-to-Quizz",
+            "document_title" : "PDF-to-Quizz"
         }
     }
 

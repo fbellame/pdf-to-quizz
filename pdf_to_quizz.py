@@ -13,7 +13,8 @@ def pdf_to_quizz(pdf_file_name):
     questions = []
     for page in pages:
         question = process_page(page)
-        questions.append(question)
+        if question is not None:
+            questions.append(question)
 
     all_questions = []
     

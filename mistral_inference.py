@@ -76,8 +76,9 @@ class MistralTextGenInference():
                 print(json.dumps(response_data, indent=2))
         except requests.exceptions.RequestException as e:
             print("Error:", e)
-
-        return "" 
+            return None
+        except Exception:
+            return None            
     
     def get_parsed_value(self, parser, key, doc):
         try:
@@ -87,7 +88,7 @@ class MistralTextGenInference():
         except Exception as e:
             print(f"Error processing doc: {str(e)}")
             print(f"Key {key}")
-            return {key: "error"}    
+            raise    
         
     def parse(self, text: str):
 
