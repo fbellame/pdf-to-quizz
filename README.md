@@ -1,10 +1,8 @@
-# PDF to Quiz
+# PDF to Quiz in Google Form
 
-Upload a multiple page PDF and generate a quiz with multiple options. For each page 2 questions will be generated.
+Upload a multiple page PDF and generate a quiz with multiple options. For each page 1 question will be generated.
 
-This leverage Langchain library to abstract the LLM (Large Language Model) calls.
-
-The UI is based on Streamlit
+You can also generate a google form with the generated quizz.
 
 Here is an exemple PDF (sorry in french but you can get the idea...)
 
@@ -15,23 +13,24 @@ Will generate the following interractive quiz questions:
 ![PDF sample](img/quiz-reponse.png)
 
 
-## Pre-requisite
+## Pre-requisite no GPU
 
-You need an OpenAI API key from https://platform.openai.com/account/api-keys
+In order to generate the Quiz, a fine tuned Mistral 7B must be deployed
 
-Keep in mind this is not free BUT the with the usage of **gpt-3.5-turbo** it's not expensive at all unless you drop really big PDF (more than 100 pages).
+You need an RunPod API key if you decide to deploy Mistral LLM on Runpod.
 
-![Open AI key](img/OPENAI-KEY.png)
-
-Once you have your API key you can install it in your terminal like this:
+Once you have your API key you can deploy the runPod with: 
 
 ``` sh
-export OPENAI_API_KEY=[Your-API-key]
+# deploy the LLM model (fine tuned Mistral 7B) on RunPod
+# edit this script to add your runPod key before
+./deploy_pod.sh
+
+# once the pod is deployed and running, get the POD_ID
+# it's required when launching the app later.
 ```
 
-
 ## Instructions
-
 
 To install:
 ``` sh
@@ -40,15 +39,14 @@ pip install -r requirements.txt
 
 ## Run
 
-
-
 To run:
 ```sh
+export RUNPOD_ID=[POD_ID]
 streamlit run ui.py
 ```
 
 To run on docker
 ```sh
 docker build -t pdf-to-quizz .
-docker run -e OPENAI_API_KEY=[your-api-key] -p 8501:8501 pdf-to-quizz
+docker run -e RUNPOD_ID=[POD_ID] -p 80:8501 pdf-to-quizz
 ```

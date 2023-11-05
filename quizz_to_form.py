@@ -33,8 +33,6 @@ def quizz_to_form(quiz_data):
     # Creates the initial form
     result = form_service.forms().create(body=NEW_FORM).execute()
 
-    random_id = random.randint(1, 10000)
-
     # Adds the question to the form
     question_setting = form_service.forms().batchUpdate(formId=f'{result["formId"]}', body=NEW_QUESTION).execute()
 

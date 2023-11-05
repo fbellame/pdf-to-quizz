@@ -1,10 +1,8 @@
-import asyncio
 from langchain.document_loaders import PyPDFLoader
 from quizz_generator import generate_quizz
 from ui_utils import transform
 
-async def pdf_to_quizz(pdf_file_name):
-
+def pdf_to_quizz(pdf_file_name):
 
     loader = PyPDFLoader(pdf_file_name)
     pages = loader.load_and_split()
