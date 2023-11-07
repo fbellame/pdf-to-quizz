@@ -31,9 +31,6 @@ Once you have your API key you can deploy the runPod with:
 # deploy the LLM model (fine tuned Mistral 7B) on RunPod
 # edit this script to add your runPod key before
 ./deploy_pod.sh
-
-# once the pod is deployed and running, get the POD_ID
-# it's required when launching the app later.
 ```
 
 ## Instructions
@@ -47,12 +44,11 @@ pip install -r requirements.txt
 
 To run:
 ```sh
-export RUNPOD_ID=[POD_ID]
 streamlit run ui.py --server.port 80
 ```
 
 To run on docker
 ```sh
 docker build -t pdf-to-quizz .
-docker run -e RUNPOD_ID=[POD_ID] -p 80:8501 pdf-to-quizz
+docker run -e RUNPOD_KEY=[RUNPOD_KEY] -p 80:8501 pdf-to-quizz
 ```
