@@ -2,9 +2,12 @@ import streamlit as st
 from ui_utils import check_password
 from pdf_to_quizz import pdf_to_quizz
 from text_to_quizz import txt_to_quizz
-from quizz_to_form import quizz_to_form
+from quizz_to_form import GoogleForm
 
 st.title("PDF to Quiz (:-)(-: )")
+
+if 'google_form' not in st.session_state:
+    st.session_state['google_form'] = None  # Or the appropriate initial value
 
 def build_question(count, json_question):
 
@@ -37,11 +40,10 @@ def build_question(count, json_question):
 uploaded_file = st.file_uploader(":female-student:", type=["pdf"])
 txt = st.text_area('Taper le texte à partir duquel vous voulez générer le quizz')
 
-if st.button("Générer Quiz", key="button_generer"):
-    if txt is not None:
-        with st.spinner("Génération du quizz..."):
-            st.session_state['questions'] = txt_to_quizz(txt)
-            st.write("Quizz généré avec succès!")
+if st.button("Générer Quiz", key="button_generer") and txt is not None:
+    with st.spinner("Génération du quizz..."):
+        st.session_state['questions'] = txt_to_quizz(txt)
+        st.write("Quizz généré avec succès!")
 
 if uploaded_file is not None:    
     old_file_name = st.session_state.get('uploaded_file_name', None)
@@ -70,8 +72,13 @@ if ('questions' in st.session_state):
         with st.spinner("Génération du quizz Google Form..."):
             json_questions = st.session_state['questions']
 
-            result = quizz_to_form(json_questions)
+            google_form = st.session_state['google_form']
+            if google_form is None:
+                google_form = GoogleForm()
+                st.session_state['google_form'] = google_form
 
+            result = google_form.quiz_to_form(json_questions)
+            
             st.write("Google Form Quiz généré avec succés!") 
             st.write(f'[PQF-to_quizz-form]({result["responderUri"]})')
 

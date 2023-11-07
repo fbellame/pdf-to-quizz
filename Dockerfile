@@ -9,7 +9,7 @@ COPY ./requirements.txt /requirements.txt
 # switch working directory
 WORKDIR /
 
-ENV RUNPOD_ID=""
+ENV RUNPOD_KEY=""
 
 EXPOSE 8501
 

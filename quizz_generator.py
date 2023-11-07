@@ -1,15 +1,16 @@
 import os
-from mistral_inference import MistralTextGenInference
+from runpod_proxy import RunProxyClass
 
-# Retrieve RUNPOD_ID from the environment variables
-RUNPOD_ID = os.getenv("RUNPOD_ID", "")
+inference_params = {
+    'max_new_tokens': 500,
+    'temperature': 0.1
+}
 
-url = f"https://{RUNPOD_ID}-8000.proxy.runpod.net/"
-mistral = MistralTextGenInference(inference_server_url=url, max_new_tokens=500, temperature=0.1)
+run_proxy = RunProxyClass(inference_params)
 
 def llm_call(text: str):
     print("llm call running...")
-    result = mistral(text)
+    result = run_proxy.generate_text(text)
     print("llm call done.")
     return result
 
