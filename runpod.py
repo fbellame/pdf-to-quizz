@@ -14,12 +14,13 @@ class RunPodScheduler:
         self.response_data = None
 
         self.monitoring_interval = 60 # one minute
-        self.idle_threshold = 120 # 5 minutes
+        self.idle_threshold = 300 # 5 minutes
 
         self.pod_state = 'unknow'
 
-        self.start_monitor()   
-        self.start_gpu_usage() 
+        if self.pod_id is not None:
+            self.start_monitor()   
+            self.start_gpu_usage() 
 
     def start_gpu_usage(self):
         self.update_thread = threading.Thread(target=self.update_gpu_usage, daemon=True)
@@ -90,7 +91,12 @@ class RunPodScheduler:
 
         response = requests.post(self.url, headers=self.headers, json=data)
 
+        time.sleep(600)  # Wait for 10 minutes for pod to come up after creating (image download is slow)
+
         self.pod_state = 'started'
+
+        self.start_monitor()   
+        self.start_gpu_usage() 
 
         if response.status_code == 200:
             self.response_data = response.json()
@@ -140,6 +146,9 @@ class RunPodScheduler:
         }
 
         response = requests.post(self.url, headers=self.headers, json=data)
+
+        # wait 20 secondes for the pod to come up
+        time.sleep(20)  # Wait for 1 second before the next update        
 
         # if monitor was stopped when pod was stopped because of idle time, restart monitor
         if not self.monitor_thread.is_alive():
@@ -204,7 +213,7 @@ class RunPodScheduler:
             time.sleep(1)  # Wait for 1 second before the next call          
 
     def ensure_pod_is_running(self):
-        
+
         pod_id = self.get_pod_id()
         if self.pod_state == 'stopped' or self.pod_state == 'unknow':
             
@@ -213,11 +222,9 @@ class RunPodScheduler:
                 pod_runtime = self.get_pod_runtime()
                 if pod_runtime is None:
                     self.start_pod()
-
-                    # wait 20 secondes for the pod to come up
-                    time.sleep(20)  # Wait for 1 second before the next update
             else:
                 self.deploy_pod()
+ 
                 pod_id = self.get_pod_id()  # Get the new pod ID after deployment
         
         return pod_id
