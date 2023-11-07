@@ -2,6 +2,24 @@ import requests
 import os
 import time
 import threading
+import yaml
+
+
+class DeploymentParams:
+    def __init__(self, yaml_file):
+        with open(yaml_file, 'r') as file:
+            params = yaml.safe_load(file)
+
+        self.cloud_type = params.get('cloud_type', 'ALL')
+        self.gpu_count = params.get('gpu_count', 1)
+        self.volume_in_gb = params.get('volume_in_gb', 50)
+        self.container_disk_in_gb = params.get('container_disk_in_gb', 40)
+        self.gpu_type_id = params.get('gpu_type_id', 'NVIDIA GeForce RTX 3070')
+        self.name = params.get('name', 'peft-gpu-inference')
+        self.image_name = params.get('image_name', 'docker.io/fbellame/peft-gpu-inference:12')
+        self.docker_args = params.get('docker_args', '')
+        self.ports = params.get('ports', '8000/http')
+        self.volume_mount_path = params.get('volume_mount_path', '/data')
 
 class RunPodScheduler:
     def __init__(self):
@@ -61,31 +79,31 @@ class RunPodScheduler:
                 break  # Stop the thread if the pod has been stopped due to inactivity
             time.sleep(self.monitoring_interval)  # Check every minute            
 
-    def deploy_pod(self):
+    def deploy_pod(self, params: DeploymentParams):
         data = {
-            "query": """
-            mutation {
-                podFindAndDeployOnDemand(input: {
-                    cloudType: ALL,
-                    gpuCount: 1,
-                    volumeInGb: 50,
-                    containerDiskInGb: 40,
-                    gpuTypeId: "NVIDIA GeForce RTX 3070",
-                    name: "peft-gpu-inference",
-                    imageName: "docker.io/fbellame/peft-gpu-inference:12",
-                    dockerArgs: "",
-                    ports: "8000/http",
-                    volumeMountPath: "/data"
-                }) {
+            "query": f"""
+            mutation {{
+                podFindAndDeployOnDemand(input: {{
+                    cloudType: {params.cloud_type},
+                    gpuCount: {params.gpu_count},
+                    volumeInGb: {params.volume_in_gb},
+                    containerDiskInGb: {params.container_disk_in_gb},
+                    gpuTypeId: "{params.gpu_type_id}",
+                    name: "{params.name}",
+                    imageName: "{params.image_name}",
+                    dockerArgs: "{params.docker_args}",
+                    ports: "{params.ports}",
+                    volumeMountPath: "{params.volume_mount_path}"
+                }}) {{
                     id
                     imageName
                     env
                     machineId
-                    machine {
+                    machine {{
                         podHostId
-                    }
-                }
-            }
+                    }}
+                }}
+            }}
             """
         }
 
@@ -223,7 +241,8 @@ class RunPodScheduler:
                 if pod_runtime is None:
                     self.start_pod()
             else:
-                self.deploy_pod()
+                params = DeploymentParams('runpod_spec.yaml')
+                self.deploy_pod(params)
  
                 pod_id = self.get_pod_id()  # Get the new pod ID after deployment
         

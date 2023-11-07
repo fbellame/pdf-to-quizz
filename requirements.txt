@@ -19,4 +19,5 @@ google-auth-oauthlib
 streamlit
 matplotlib
 tk
+pyyaml
 
