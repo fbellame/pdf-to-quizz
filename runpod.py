@@ -30,15 +30,23 @@ class RunPodScheduler:
         }
         self.pod_id = self.find_pod_id()
         self.response_data = None
+        self.monitor_thread = None
 
         self.monitoring_interval = 60 # one minute
         self.idle_threshold = 300 # 5 minutes
 
-        self.pod_state = 'unknow'
+        if self.pod_id is not None and not self.is_pod_ready(self.pod_id):
+            self.start_pod()
 
         if self.pod_id is not None:
             self.start_monitor()   
             self.start_gpu_usage() 
+
+    def get_pod_state(self):
+        if self.monitor_thread.is_alive():
+            return "STARTED"
+        else:
+            return "STOPPED"
 
     def start_gpu_usage(self):
         self.update_thread = threading.Thread(target=self.update_gpu_usage, daemon=True)
@@ -161,7 +169,6 @@ class RunPodScheduler:
                 time.sleep(30)  # Check every 30 seconds
 
             print("Pod is ready.")
-            self.pod_state = 'started'
             self.start_monitor()   
             self.start_gpu_usage()
         else:
@@ -187,7 +194,6 @@ class RunPodScheduler:
         response = requests.post(self.url, headers=self.headers, json=data)
 
         if response.status_code == 200:
-            self.pod_state = 'stopped'
             print("Pod stopped successfully:", response.json())
             return response.json()
         else:
@@ -208,14 +214,14 @@ class RunPodScheduler:
 
         response = requests.post(self.url, headers=self.headers, json=data)
 
-        # wait 20 secondes for the pod to come up
-        time.sleep(20)  # Wait for 1 second before the next update        
+        # Wait for the pod to become ready
+        while not self.is_pod_ready(self.pod_id):
+            print("Waiting for pod to be ready...")
+            time.sleep(2)  # Check every 2 seconds        
 
         # if monitor was stopped when pod was stopped because of idle time, restart monitor
-        if not self.monitor_thread.is_alive():
+        if  self.monitor_thread is not None and not self.monitor_thread.is_alive():
             self.start_monitor()
-
-        self.pod_state = 'started'
 
         if response.status_code == 200:
             print("Pod started successfully:", response.json())
@@ -250,7 +256,6 @@ class RunPodScheduler:
         for pod in pods_info.get('data', {}).get('myself', {}).get('pods', []):
             if pod.get('runtime') is not None:
                 runtime_data = pod.get('runtime')
-                self.pod_state = 'started'
                 break  # Assuming you only want the first occurrence
 
         return runtime_data       
@@ -276,7 +281,7 @@ class RunPodScheduler:
     def ensure_pod_is_running(self):
 
         pod_id = self.get_pod_id()
-        if self.pod_state == 'stopped' or self.pod_state == 'unknow':
+        if self.get_pod_state() == 'STOPPED':
             
             # Start the pod if not running
             if pod_id:

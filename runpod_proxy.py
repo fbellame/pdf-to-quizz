@@ -19,4 +19,12 @@ class RunProxyClass:
         # Ensure that the pod is running and mistral instance is ready
         self.ensure_pod_is_running_and_instantiate_mistral()
 
-        return self.mistral(*args, **kwargs)
+        result =  self.mistral(*args, **kwargs)
+
+        # if pod is not running, try again to start the pod...
+        if result is None:
+            self.scheduler.start_pod()
+
+            result =  self.mistral(*args, **kwargs)
+
+        return result
