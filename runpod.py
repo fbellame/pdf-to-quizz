@@ -77,7 +77,47 @@ class RunPodScheduler:
                 print("Pod has been idle for 5 minutes, stopping pod.")
                 self.stop_pod()
                 break  # Stop the thread if the pod has been stopped due to inactivity
-            time.sleep(self.monitoring_interval)  # Check every minute            
+            time.sleep(self.monitoring_interval)  # Check every minute     
+
+    def is_pod_ready(self, pod_id):
+        query = {
+            "query": f"""
+            query Pod {{
+                pod(input: {{ podId: "{pod_id}" }}) {{
+                    id
+                    name
+                    runtime {{
+                        uptimeInSeconds
+                        ports {{
+                            ip
+                            isIpPublic
+                            privatePort
+                            publicPort
+                            type
+                        }}
+                        gpus {{
+                            id
+                            gpuUtilPercent
+                            memoryUtilPercent
+                        }}
+                        container {{
+                            cpuPercent
+                            memoryPercent
+                        }}
+                    }}
+                }}
+            }}
+            """
+        }
+        response = requests.post(self.url, headers=self.headers, json=query)
+
+        if response.status_code == 200:
+            pod_info = response.json()['data']['pod']
+            # Here we assume if the 'runtime' block exists, the pod is ready
+            return pod_info['runtime'] is not None
+        else:
+            print(f"Error checking pod status: {response.status_code} {response.text}")
+            return False                 
 
     def deploy_pod(self, params: DeploymentParams):
         data = {
@@ -109,17 +149,21 @@ class RunPodScheduler:
 
         response = requests.post(self.url, headers=self.headers, json=data)
 
-        time.sleep(600)  # Wait for 10 minutes for pod to come up after creating (image download is slow)
-
-        self.pod_state = 'started'
-
-        self.start_monitor()   
-        self.start_gpu_usage() 
-
+        # Immediately after sending the deployment request, check the response.
         if response.status_code == 200:
             self.response_data = response.json()
             self.pod_id = self.response_data['data']['podFindAndDeployOnDemand']['id']
-            print("Success:", self.response_data)
+            print("Deployment in progress, please wait...")
+
+            # Wait for the pod to become ready
+            while not self.is_pod_ready(self.pod_id):
+                print("Waiting for pod to be ready...")
+                time.sleep(30)  # Check every 30 seconds
+
+            print("Pod is ready.")
+            self.pod_state = 'started'
+            self.start_monitor()   
+            self.start_gpu_usage()
         else:
             print("Error:", response.status_code, response.text)
 
@@ -142,9 +186,8 @@ class RunPodScheduler:
 
         response = requests.post(self.url, headers=self.headers, json=data)
 
-        self.pod_state = 'stopped'
-
         if response.status_code == 200:
+            self.pod_state = 'stopped'
             print("Pod stopped successfully:", response.json())
             return response.json()
         else:
