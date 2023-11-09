@@ -4,10 +4,11 @@
 
 If you are not a software developer and want to try out this tool for free, you can visit https://pdfquiz2.xtierdev.com/
 
-The version deployed is not using OpenAI GPT3.5 but my own fine tuned model version mistral ()
+The version deployed is not using OpenAI GPT3.5 but my own fine tuned model version [fbellame/mistral-pdf-to-quizz-7b](https://huggingface.co/fbellame/mistral-pdf-to-quizz-7b)
+
 To make this work I deployed the model on [RunPod.io](https://www.runpod.io/gpu-instance/pricing). 
 
-This is not cheap, it cost .20$/hour. You can help me kepp this app online by a small donatation (1$ or 2$) on my [kof-fi page](https://ko-fi.com/fbellame#)
+This is not cheap, it cost .20$/hour. You can help me keep this app online by a small donatation (1$ or 2$) on my [kof-fi page](https://ko-fi.com/fbellame#)
 
 ## Usage
 
