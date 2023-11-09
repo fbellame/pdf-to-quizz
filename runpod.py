@@ -43,7 +43,7 @@ class RunPodScheduler:
             self.start_gpu_usage() 
 
     def get_pod_state(self):
-        if self.monitor_thread.is_alive():
+        if self.monitor_thread is not None and self.monitor_thread.is_alive():
             return "STARTED"
         else:
             return "STOPPED"
