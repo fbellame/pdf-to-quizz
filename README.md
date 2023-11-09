@@ -1,5 +1,16 @@
 # PDF to Quiz
 
+## Important note
+
+If you are not a software developer and want to try out this tool for free, you can visit https://pdfquiz2.xtierdev.com/
+
+The version deployed is not using OpenAI GPT3.5 but my own fine tuned model version mistral ()
+To make this work I deployed the model on [RunPod.io](https://www.runpod.io/gpu-instance/pricing). 
+
+This is not cheap, it cost .20$/hour. You can help me kepp this app online by a small donatation (1$ or 2$) on my [kof-fi page](https://ko-fi.com/fbellame#)
+
+## Usage
+
 Upload a multiple page PDF and generate a quiz with multiple options. For each page 2 questions will be generated.
 
 This leverage Langchain library to abstract the LLM (Large Language Model) calls.
