@@ -2,6 +2,7 @@ from __future__ import print_function
 from apiclient import discovery
 from httplib2 import Http
 from oauth2client import client, file, tools
+import time
 
 SCOPES = "https://www.googleapis.com/auth/forms.body"
 DISCOVERY_DOC = "https://forms.googleapis.com/$discovery/rest?version=v1"
@@ -103,7 +104,7 @@ class GoogleForm:
         new_form = {
             "info": {
                 "title": "PDF-to-Quizz",
-                "document_title": "PDF-to-Quizz"
+                "document_title": f"PDF-to-Quizz-{time.time()}"
             }
         }
 

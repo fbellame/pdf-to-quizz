@@ -6,6 +6,10 @@ from quizz_to_form import GoogleForm
 
 st.title("Welcome to PDF to Quiz (:-)(-: )")
 
+st.write("This small app is developed in open source, you can find the source here https://github.com/fbellame/pdf-to-quizz")
+st.write("This is a tryout for everyone can test the app for free!")
+st.write("Unfortunatly, GPU are really expensive! If you want to help me keep this app online and improve it with your feeback, you can donate 1$ or 2$ here https://ko-fi.com/fbellame# :-)")
+
 if 'google_form' not in st.session_state:
     st.session_state['google_form'] = None  # Or the appropriate initial value
 

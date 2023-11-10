@@ -4,7 +4,7 @@ volume_in_gb: 50
 container_disk_in_gb: 40
 gpu_type_id: "NVIDIA GeForce RTX 3070"
 name: "peft-gpu-inference"
-image_name: "docker.io/fbellame/peft-gpu-inference:12"
+image_name: "docker.io/fbellame/peft-gpu-inference:11.7.3"
 docker_args: ""
 ports: "8000/http"
 volume_mount_path: "/data"
