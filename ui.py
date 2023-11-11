@@ -53,7 +53,7 @@ if uploaded_file is not None:
     old_file_name = st.session_state.get('uploaded_file_name', None)
     if (old_file_name != uploaded_file.name):
         # Convert PDF to text
-        with st.spinner("Please wait a little bit while the quizz is generating, you you uploader a multi pages pdf it can be quite long, so grab a coffee..."):
+        with st.spinner("Please wait a little bit while the quizz is generating, if you uploaded a multi pages pdf it can be quite long, so grab a coffee..."):
 
             with open(f"data/{uploaded_file.name}", "wb") as f:
                 f.write(uploaded_file.getvalue())        

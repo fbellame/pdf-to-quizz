@@ -4,6 +4,9 @@ import time
 import threading
 import yaml
 
+class PodStartError(Exception):
+    """Custom exception for errors starting the pod."""
+    pass
 
 class DeploymentParams:
     def __init__(self, yaml_file):
@@ -199,7 +202,7 @@ class RunPodScheduler:
         else:
             print("Error stopping pod:", response.status_code, response.text)
             return None    
-
+                
     def start_pod(self):
         data = {
             "query": """
@@ -214,21 +217,32 @@ class RunPodScheduler:
 
         response = requests.post(self.url, headers=self.headers, json=data)
 
-        # Wait for the pod to become ready
-        while not self.is_pod_ready(self.pod_id):
-            print("Waiting for pod to be ready...")
-            time.sleep(2)  # Check every 2 seconds        
-
-        # if monitor was stopped when pod was stopped because of idle time, restart monitor
-        if  self.monitor_thread is not None and not self.monitor_thread.is_alive():
-            self.start_monitor()
-
         if response.status_code == 200:
-            print("Pod started successfully:", response.json())
-            return response.json()
+            response_data = response.json()
+
+            # Vérifier si la réponse contient une erreur spécifique liée aux ressources GPU
+            if response_data.get("errors"):
+                for error in response_data["errors"]:
+                    if "not enough free GPUs" in error["message"]:
+                        print("Erreur : Pas assez de GPU libres pour démarrer le pod.")
+                        raise PodStartError("Error: Not enough free GPUs to start the pod.")
+
+            # Si pas d'erreur, continuer à attendre que le pod soit prêt
+            while not self.is_pod_ready(self.pod_id):
+                print("Waiting for pod to be ready...")
+                time.sleep(2)
+
+            # Redémarrer le moniteur si nécessaire
+            if self.monitor_thread is not None and not self.monitor_thread.is_alive():
+                self.start_monitor()
+
+            print("Pod started successfully:", response_data)
+            return response_data
+
         else:
-            print("Error stopping pod:", response.status_code, response.text)
-            return None    
+            print("Error starting pod:", response.status_code, response.text)
+            return None
+  
         
     def get_pods_info(self):
         query = {
@@ -258,41 +272,4 @@ class RunPodScheduler:
                 runtime_data = pod.get('runtime')
                 break  # Assuming you only want the first occurrence
 
-        return runtime_data       
-
-
-    def analyze_and_monitor_gpu_utilization(self, duration=60):
-        """
-        Monitors the GPU utilization percentage every second for a given duration.
-
-        :param duration: The total time to monitor for in seconds. Defaults to 60 seconds.
-        """
-        start_time = time.time()
-        while (time.time() - start_time) < duration:
-            runtime_data = self.get_pod_runtime()
-            if runtime_data and 'gpus' in runtime_data:
-                # It's assumed there's only one GPU in the list, hence runtime_data['gpus'][0]
-                gpu_util_percent = runtime_data['gpus'][0]['gpuUtilPercent']
-                print(f"GPU Utilization: {gpu_util_percent}%")
-            else:
-                print("No GPU data available.")
-            time.sleep(1)  # Wait for 1 second before the next call          
-
-    def ensure_pod_is_running(self):
-
-        pod_id = self.get_pod_id()
-        if self.get_pod_state() == 'STOPPED':
-            
-            # Start the pod if not running
-            if pod_id:
-                pod_runtime = self.get_pod_runtime()
-                if pod_runtime is None:
-                    self.start_pod()
-            else:
-                params = DeploymentParams('runpod_spec.yaml')
-                self.deploy_pod(params)
- 
-                pod_id = self.get_pod_id()  # Get the new pod ID after deployment
-        
-        return pod_id
-
+        return runtime_data        
