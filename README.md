@@ -1,5 +1,9 @@
 # PDF to Quiz
 
+## Important
+
+If you want to tryout the clone in better of this App on OpenAI GPT, checkout my [GPTs Agent PDF-to-Quizz](https://chat.openai.com/g/g-oMR8x3UTD-pdf-to-quizz) online, it's free but you need a GPT Plus
+
 ## Usage
 
 Upload a multiple page PDF and generate a quiz with multiple options. For each page 2 questions will be generated.
