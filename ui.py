@@ -65,8 +65,8 @@ if ('questions' in st.session_state):
     # Display question
     count = 0
     for json_question in st.session_state['questions']:
+        count = build_question(count, json_question)
 
-        
     # generate pdf quiz
     if st.button("Générer PDF Quiz", key=f"button_generer_quiz"):
         with st.spinner("Génération du quizz en PDF..."):
